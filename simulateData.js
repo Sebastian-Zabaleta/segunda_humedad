@@ -8,11 +8,11 @@ function generateRandomData() {
   };
 }
 
-// Función para enviar datos a la API
+// Función para enviar datos simulados a la API en Vercel
 async function sendData() {
   const data = generateRandomData();
   try {
-    const response = await fetch('http://localhost:3000/api/sensors', {
+    const response = await fetch('https://segunda-humedad.vercel.app/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,5 +31,5 @@ async function sendData() {
   }
 }
 
-// Enviar datos cada 10 segundos
+// Enviar datos simulados cada 10 segundos
 setInterval(sendData, 10000);

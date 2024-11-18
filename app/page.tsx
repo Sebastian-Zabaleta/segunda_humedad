@@ -1,16 +1,16 @@
-import Image from 'next/image';
-
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col items-center justify-center p-8">
       <div className="flex justify-between w-full max-w-5xl">
         
-        {/* Imagen del Logo Izquierdo */}
+        {/* Espacio para el Logo Izquierdo */}
         <div className="flex items-center justify-center">
-         {/*  <Image
+          {/* Imagen del Logo Izquierdo */}
+          {/* Para activar, descomenta y asegúrate de que la imagen exista en la carpeta 'public/assets/' */}
+          {/* <Image
             src="/assets/Logo_Universidad_de_Cundinamarca.png"
             alt="Logo Universidad de Cundinamarca"
-            width={400} // Tamaño ajustable
+            width={400} // Ajusta el tamaño según sea necesario
             height={400}
             className="rounded-full shadow-lg"
           /> */}
@@ -29,8 +29,9 @@ export default function HomePage() {
 
           {/* Imagen del Estadio */}
           <div className="my-10 flex justify-center">
-     {/*        <Image
-              src="/images.png" // Asegúrate de que esta imagen esté en la carpeta 'public/'
+            {/* Para activar, descomenta y asegúrate de que la imagen exista en la carpeta 'public/' */}
+            {/* <Image
+              src="/images.png"
               alt="Estadio"
               width={400}
               height={400}
@@ -49,12 +50,14 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Imagen del Logo Derecho */}
+        {/* Espacio para el Logo Derecho */}
         <div className="flex items-center justify-center">
-      {/*     <Image
-            src="Logo_Universidad_de_Cundinamarca.png"
+          {/* Imagen del Logo Derecho */}
+          {/* Para activar, descomenta y asegúrate de que la imagen exista en la carpeta 'public/' */}
+          {/* <Image
+            src="/assets/Logo_Universidad_de_Cundinamarca.png"
             alt="Logo Universidad de Cundinamarca"
-            width={400} // Tamaño ajustable
+            width={400} // Ajusta el tamaño según sea necesario
             height={400}
             className="rounded-full shadow-lg"
           /> */}

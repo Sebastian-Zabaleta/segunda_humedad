@@ -7,13 +7,13 @@ export default function HomePage() {
         
         {/* Imagen del Logo Izquierdo */}
         <div className="flex items-center justify-center">
-          <Image
-            src="Logo_Universidad_de_Cundinamarca.png"
+         {/*  <Image
+            src="/assets/Logo_Universidad_de_Cundinamarca.png"
             alt="Logo Universidad de Cundinamarca"
             width={400} // Tamaño ajustable
             height={400}
             className="rounded-full shadow-lg"
-          />
+          /> */}
         </div>
 
         {/* Contenido Principal */}
@@ -29,13 +29,13 @@ export default function HomePage() {
 
           {/* Imagen del Estadio */}
           <div className="my-10 flex justify-center">
-            <Image
+     {/*        <Image
               src="/images.png" // Asegúrate de que esta imagen esté en la carpeta 'public/'
               alt="Estadio"
               width={400}
               height={400}
               className="rounded-3xl shadow-lg border-4 border-teal-600 transition-transform transform hover:scale-105"
-            />
+            /> */}
           </div>
 
           {/* Enlace a la página de sensores */}
@@ -51,13 +51,13 @@ export default function HomePage() {
 
         {/* Imagen del Logo Derecho */}
         <div className="flex items-center justify-center">
-          <Image
+      {/*     <Image
             src="Logo_Universidad_de_Cundinamarca.png"
             alt="Logo Universidad de Cundinamarca"
             width={400} // Tamaño ajustable
             height={400}
             className="rounded-full shadow-lg"
-          />
+          /> */}
         </div>
       </div>
     </div>

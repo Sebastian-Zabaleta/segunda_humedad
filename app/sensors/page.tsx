@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -29,17 +28,44 @@ export default function SensorsPage() {
 
   useEffect(() => {
     async function fetchHumidityData() {
-      const response = await fetch('/api/sensors');
-      const data: HumidityData[] = await response.json();
+      try {
+        const response = await fetch('/api/sensors');
 
-      const sortedData = data.sort(
-        (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-      );
+        if (!response.ok) {
+          console.error("Error al obtener los datos:", response.status, response.statusText);
+          throw new Error(`Error al obtener los datos: ${response.status}`);
+        }
 
-      setHistory(sortedData);
+        const dataResponse = await response.json();
+        console.log("Respuesta de la API:", dataResponse);
 
-      const latestData = sortedData.filter((item) => item.location === "Ubicacion 1").pop();
-      setLatestReading(latestData || null);
+        const data: HumidityData[] = Array.isArray(dataResponse)
+          ? dataResponse
+          : dataResponse.results;
+
+        if (!Array.isArray(data)) {
+          throw new Error("La respuesta de la API no es un array válido");
+        }
+
+        const sortedData = data.sort(
+          (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        );
+
+        setHistory(sortedData);
+
+        const latestData = sortedData.filter((item) => item.location === "Ubicacion 1").pop();
+        setLatestReading(latestData || null);
+      } catch (error) {
+        console.error("Error al obtener los datos de la API:", error);
+
+        // Proveer datos de ejemplo si la API falla
+        const sampleData: HumidityData[] = [
+          { timestamp: new Date().toISOString(), humidity_value: 45, location: "Ubicacion 1" },
+          { timestamp: new Date().toISOString(), humidity_value: 50, location: "Ubicacion 2" },
+        ];
+        setHistory(sampleData);
+        setLatestReading(sampleData[0]);
+      }
     }
 
     fetchHumidityData();
@@ -102,67 +128,54 @@ export default function SensorsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 flex flex-col items-center justify-center p-4 sm:p-6">
-      <div className="bg-gray-700 shadow-2xl rounded-2xl p-6 sm:p-10 w-full max-w-md sm:max-w-2xl text-center">
-        <h1 className="text-3xl sm:text-4xl font-semibold mb-4 text-teal-300">Sensor de Humedad</h1>
-        <p className="text-sm sm:text-md mb-4 sm:mb-8 text-gray-300">
-          Observa las mediciones en tiempo real de humedad en porcentaje.
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-gray-900 flex flex-col items-center p-6">
+      <div className="bg-gray-800 shadow-lg rounded-lg w-full max-w-5xl p-6 sm:p-8">
+        <h1 className="text-4xl font-bold text-teal-300 text-center mb-6">Sensor de Humedad</h1>
+        <p className="text-center text-gray-300 mb-8 text-lg">
+          Monitorea las mediciones en tiempo real de la humedad relativa.
         </p>
-        <div className="overflow-x-auto">
+
+        <div className="bg-gray-700 p-4 sm:p-6 rounded-lg shadow-inner">
           <Line data={data} options={options} />
         </div>
-        <h2 className="text-xl sm:text-2xl font-semibold mt-6 sm:mt-8 text-teal-300">Historial de Mediciones</h2>
-        <table className="w-full mt-4 text-gray-300 text-sm sm:text-base">
+      </div>
+
+      <div className="bg-gray-800 shadow-lg rounded-lg w-full max-w-5xl mt-8 p-6 sm:p-8">
+        <h2 className="text-2xl font-semibold text-teal-300 mb-4">Historial de Mediciones</h2>
+        <table className="w-full text-gray-300 text-sm sm:text-base bg-gray-700 rounded-lg overflow-hidden">
           <thead>
-            <tr>
-              <th className="border-b-2 border-gray-500 px-2 sm:px-4 py-2">Hora</th>
-              <th className="border-b-2 border-gray-500 px-2 sm:px-4 py-2">Humedad (%)</th>
-              <th className="border-b-2 border-gray-500 px-2 sm:px-4 py-2">Ubicación</th>
+            <tr className="bg-teal-600 text-white">
+              <th className="px-4 py-2">Hora</th>
+              <th className="px-4 py-2">Humedad (%)</th>
+              <th className="px-4 py-2">Ubicación</th>
             </tr>
           </thead>
           <tbody>
             {history.map((item, index) => (
-              <tr key={index}>
-                <td className="border-b border-gray-700 px-2 sm:px-4 py-2">
-                  {new Date(item.timestamp).toLocaleTimeString()}
-                </td>
-                <td className="border-b border-gray-700 px-2 sm:px-4 py-2">{item.humidity_value}</td>
-                <td className="border-b border-gray-700 px-2 sm:px-4 py-2">{item.location}</td>
+              <tr key={index} className="even:bg-gray-800 odd:bg-gray-700">
+                <td className="px-4 py-2 text-center">{new Date(item.timestamp).toLocaleTimeString()}</td>
+                <td className="px-4 py-2 text-center">{item.humidity_value}</td>
+                <td className="px-4 py-2 text-center">{item.location}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div className="relative w-full max-w-4xl mt-8 sm:mt-10">
-        <Image
-          src="campo_futbol.png"
-          alt="Campo de fútbol"
-          layout="responsive"
-          width={300}
-          height={200}
-          className="rounded-lg shadow-md"
-        />
-        
-        <div className="absolute top-4 left-1/4 w-3/4 sm:w-1/2 bg-teal-700 bg-opacity-75 rounded-lg p-3 sm:p-4 text-center">
-          <h2 className="text-white text-md sm:text-lg font-semibold">Humedad - Ubicación 1</h2>
-          {latestReading ? (
-            <p className="text-white text-lg sm:text-2xl mt-1 sm:mt-2">
-              {latestReading.humidity_value}% (Registrado a las {new Date(latestReading.timestamp).toLocaleTimeString()})
-            </p>
-          ) : (
-            <p className="text-white">Cargando...</p>
-          )}
-        </div>
-
-        <div className="absolute bottom-4 left-1/4 w-3/4 sm:w-1/2 bg-gray-600 bg-opacity-50 rounded-lg p-3 sm:p-4 text-center">
-          <h2 className="text-white text-md sm:text-lg font-semibold">Próxima Ubicación</h2>
-          <p className="text-white text-xs sm:text-sm">Pendiente de implementación para segunda etapa.</p>
-        </div>
+      <div className="bg-gray-800 shadow-lg rounded-lg w-full max-w-3xl mt-8 p-6 text-center">
+        <h2 className="text-xl font-semibold text-teal-300">Última Lectura</h2>
+        {latestReading ? (
+          <p className="text-gray-300 text-lg mt-4">
+            Humedad: <span className="text-teal-400 font-bold">{latestReading.humidity_value}%</span> registrada a las{' '}
+            <span className="text-teal-400 font-bold">{new Date(latestReading.timestamp).toLocaleTimeString()}</span>
+          </p>
+        ) : (
+          <p className="text-gray-400 text-lg mt-4">Cargando datos...</p>
+        )}
       </div>
 
-      <div className="mt-6 sm:mt-8">
-        <Link href="/" className="bg-teal-500 text-gray-900 font-medium text-md sm:text-lg px-6 sm:px-8 py-2 sm:py-3 rounded-lg shadow-md hover:bg-teal-400 transition duration-200">
+      <div className="mt-6">
+        <Link href="/" className="bg-teal-500 text-gray-900 font-medium text-lg px-8 py-3 rounded-lg shadow-lg hover:bg-teal-400 transition duration-200">
           Ir al Inicio
         </Link>
       </div>

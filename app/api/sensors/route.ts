@@ -7,16 +7,25 @@ const client = new Client({
   ssl: { rejectUnauthorized: false },
 });
 
+// Variable de estado para la conexión
+let isConnected = false;
+
 // Función para conectar al cliente de PostgreSQL
 async function connectToDatabase() {
   try {
-    if (!client._connected) {
+    if (!isConnected) {
       console.log("Conectando a la base de datos...");
       await client.connect();
+      isConnected = true;
       console.log("✅ Conexión establecida con la base de datos");
     }
   } catch (error) {
-    console.error("❌ Error al conectar a la base de datos:", error);
+    // Verificar si el error tiene una propiedad "message"
+    if (error instanceof Error) {
+      console.error("❌ Error al conectar a la base de datos:", error.message);
+    } else {
+      console.error("❌ Error desconocido al conectar a la base de datos:", error);
+    }
     throw new Error("Error al conectar a la base de datos");
   }
 }
@@ -50,7 +59,12 @@ export async function POST(req: Request) {
     return NextResponse.json(result.rows[0]);
 
   } catch (error) {
-    console.error("❌ Error en el servidor:", error.message);
+    // Verificar si el error tiene una propiedad "message"
+    if (error instanceof Error) {
+      console.error("❌ Error en el servidor:", error.message);
+    } else {
+      console.error("❌ Error desconocido en el servidor:", error);
+    }
     return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
 }
@@ -75,7 +89,12 @@ export async function GET() {
     return NextResponse.json(result.rows);
 
   } catch (error) {
-    console.error("❌ Error en el servidor:", error.message);
+    // Verificar si el error tiene una propiedad "message"
+    if (error instanceof Error) {
+      console.error("❌ Error en el servidor:", error.message);
+    } else {
+      console.error("❌ Error desconocido en el servidor:", error);
+    }
     return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
 }
